@@ -1,0 +1,37 @@
+{% extends 'auctions/layout.html' %}
+
+{% block body %}
+<p>ID: {{ auction.id }}</p>
+<p>Current bid: {{ auction.current_bid }}</p>
+<p>Starting bid: {{ auction.starting_bid }}</p>
+<h4>{{ auction.title }}</h4>
+<img src="{{ auction.image_url}}" alt="img">
+<p>{{ auction.description }}</p>
+<p>Number of bids: {{ auction.bid_count }}</p>
+<p>Category: {{ auction.category }}</p>
+<p>Created by: {{ auction.created_by }}</p>
+<p>Created on: {{ auction.created_at }}</p>
+<p>End time: {{ auction.end_time }}</p>
+<p>Winner: {{ auction.winner }}</p>
+
+<p>is_in_watchlist: {{ is_in_watchlist }}</p>
+{% if user.is_authenticated %}
+    {% if is_in_watchlist %}
+    <a href="{% url 'auctions:watchlist_remove' auction.id %}" method="post">Remove from watchlist</a>
+    {% else %}
+    <a href="{% url 'auctions:watchlist_add' auction.id %}" method="post">Add to watchlist</a>
+    {% endif %}
+    <br>
+    {% if auction.is_active %}
+        {% if auction.created_by == user %}
+        {% comment %} <a href="{% url 'auctions:edit' auction.id %}">Edit</a> {% endcomment %}
+        <a href="{% url 'auctions:close' auction.id %}">Close</a>
+        {% else %}
+        <a href="{% url 'auctions:bid' auction.id %}">Bid</a>
+        {% endif %}
+    {% endif %}
+{% endif %}
+
+
+
+{% endblock body %}
