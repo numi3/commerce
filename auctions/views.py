@@ -8,44 +8,32 @@ from django.contrib.auth.decorators import login_required
 
 from .models import *
 from .forms import *
+from .utils import *
+
 
 def all(request):
+    # Load & render all auctions
     return render(request, "Auctions/all.html", {
         "auctions": Auction.objects.all()  
     })
-    
+
     
 def index(request):
-    auctions = Auction.objects.all()
-    current_time = timezone.now()
-
-    # Update is_active for expired auctions:
-    expired_auctions = Auction.objects.filter(is_active=True, end_time__lte=current_time)
-    expired_auctions.update(is_active=False)
-
-    # fix is_active for non-expired auctions:
-    non_expired_auctions = Auction.objects.filter(is_active=False, end_time__gt=current_time, winner=None)
-    non_expired_auctions.update(is_active=True)
-
-    # Load active auctions
-    active_auctions = Auction.objects.filter(is_active=True).order_by("-id")
-
+    # Load & render active auctions
     return render(request, "auctions/index.html", {
-        "auctions": auctions,
-        "active_auctions": active_auctions
+        "active_auctions": Auction.objects.filter(is_active=True).order_by("-id")
     })
 
 def watchlist(request):
-    auctions = Auction.objects.filter(watchlist_auction__user=request.user)
-
+    # Load & render all auctions that have been added to the user's watchlist.
     return render(request, "auctions/watchlist.html", {
-        "auctions": auctions,
+        "auctions": Auction.objects.filter(watchlist_auction__user=request.user),
         
     })
 
 def login_view(request):
     if request.method == "POST":
-
+        
         # Attempt to sign user in
         username = request.POST["username"]
         password = request.POST["password"]
@@ -115,14 +103,22 @@ def no_listing(request):  # in case id was not provided:
 
 
 def listing(request, id):
-    if request.method == "POST":
-        pass
-        return HttpResponseRedirect(reverse("auctions:index"))
-
     auction = Auction.objects.get(id=id)
+    if request.method == "POST":
+        # adds comment
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.auction = auction
+            comment.commenter = request.user
+            comment.save()
+        return HttpResponseRedirect(reverse("auctions:listing", args=[id]))
+
     return render(request, "auctions/listing.html", {
         "auction": Auction.objects.get(id=id),
-        "is_in_watchlist": is_in_watchlist(request.user, auction)
+        "is_in_watchlist": is_in_watchlist(request.user, auction),
+        "comments": Comment.objects.filter(auction=auction),
+        "comment_area": CommentForm()
 
     })
 
@@ -180,13 +176,30 @@ def edit(request, id):
     })
     
 
+@login_required(login_url="/login/")
 def close(request, id):
     if auction := Auction.objects.get(id=id):
-        if request.user == auction.created_by and auction.current_bid is not None:
-            auction.winner = auction.current_bid.bidder
+        if request.user == auction.created_by and auction.is_active:
+            if auction.current_bid is not None:
+                auction.winner = auction.current_bid.bidder
+            auction.end_time = timezone.now()
             auction.is_active = False
             auction.save()
-            print("success "*9)
             
     return HttpResponseRedirect(reverse("auctions:listing", args=[id]))
     
+def categories(request):
+    active_auctions = Auction.objects.filter(is_active=True).order_by("-id")
+    active_auctions = Auction.objects.filter()
+    categories = {}
+    for auction in active_auctions:
+        category = auction.category.title()
+        if category not in categories:
+            categories[category] = 1
+        else:
+            categories[category] += 1
+    print(categories)
+    return render(request, "auctions/categories.html", {
+        "categories": categories,
+    })
+            

@@ -66,3 +66,9 @@ class BidForm(forms.ModelForm):
         except Auction.DoesNotExist:
             raise forms.ValidationError("Auction does not exist.")
 
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ["content"]
+        
+    
