@@ -14,7 +14,7 @@ class Auction(models.Model):
     """
     title = models.CharField(max_length=64)
     description = models.TextField(max_length=256)
-    image_url = models.CharField(max_length=256, blank=True)
+    image_url = models.CharField(max_length=256, blank=True, null=True)
     category = models.CharField(max_length=256)
     created_by = models.ForeignKey(
         User,
@@ -50,7 +50,7 @@ class Auction(models.Model):
         else:
             bid_status = f"Current bid: {self.current_bid.amount:,}$ by {self.current_bid.bidder}"
             
-        return f"ID: {self.id:,} | Title: {self.title} | {bid_status}"
+        return f"#{self.id:,} {self.title} - {bid_status}"
 
 class Bid(models.Model):
     auction_id = models.ForeignKey(
@@ -84,7 +84,7 @@ class Comment(models.Model):
         related_name="user_comments"
     )
     content = models.TextField(max_length=1024)
-    created_at = models.DateTimeField(auto_now_add=True)
+    date = models.DateTimeField(auto_now_add=True)
 
 
 class Watchlist(models.Model):

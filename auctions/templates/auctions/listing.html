@@ -52,12 +52,18 @@
         <input type="submit" value="Add comment">
     </form>
 </p>
-{% for comment in comments %}
-<p>
-    {{ comment.commenter }} <br>
-    {{ comment.content }}
-</p>
-{% endfor %}
+<ul>
+    {% for comment in comments %}
+    <li>
+        Posted by {{ comment.commenter }} at {{ comment.date }}
+        <ul>
+            <li>
+                {{ comment.content }} 
+            </li>
+        </ul>
+    </li>
+    {% endfor %}
+</ul>
 
 
 

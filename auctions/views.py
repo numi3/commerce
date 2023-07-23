@@ -117,7 +117,7 @@ def listing(request, id):
     return render(request, "auctions/listing.html", {
         "auction": Auction.objects.get(id=id),
         "is_in_watchlist": is_in_watchlist(request.user, auction),
-        "comments": Comment.objects.filter(auction=auction),
+        "comments": Comment.objects.filter(auction=auction).order_by("-date"),
         "comment_area": CommentForm()
 
     })
@@ -195,9 +195,13 @@ def categories(request):
     for auction in active_auctions:
         category = auction.category.title()
         if category not in categories:
-            categories[category] = 1
+            categories[category] = {
+                "amount": 1,
+                "auctions": [auction]
+            }
         else:
-            categories[category] += 1
+            categories[category]["amount"] += 1
+            categories[category]["auctions"].append(auction)
     print(categories)
     return render(request, "auctions/categories.html", {
         "categories": categories,
