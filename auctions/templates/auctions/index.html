@@ -23,7 +23,7 @@
             <p>End time: {{ auction.end_time }}</p>
             <p>Winner: {{ auction.winner }}</p>
         </div> {% endcomment %}
-        <div class="card">
+        <div class="card" >
             <p><a class="title bold" href="{% url "auctions:listing" auction.id %}">{{ auction.title }}</a><span class="id">#{{ auction.id }}</span></p>
             <hr class="large">
             
@@ -35,16 +35,17 @@
                 {% endif %}
             {% else %}
                 {% if auction.winner %}
-                    <p>Auction was won by {{ auction.winner }} for {{ auction.current_bid }}</p>
+                <p>Auction was won by {{ auction.winner }} for {{ auction.current_bid }}</p>
                 {% else %}
-                    <p>Unfortunately, nobody has won the auction :[</p>
+                <p>Unfortunately, nobody has won the auction :[</p>
                 {% endif %}
             {% endif %}
             
             <p class="italic">"{{ auction.description }}"</p> 
+            <img src="{{ auction.image_url }}">
         </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-
-{% endblock %}
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        {% endblock %}

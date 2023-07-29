@@ -7,20 +7,29 @@ body {
 .nav-link {
 }
 
-.container {
-    background-color: rgb(86, 206, 75);
-    font-family: sans-serif;
-}
 p {
     display: flex;
     justify-content: space-between;
-    margin: 0;
+    margin: 5px;
+}
+
+.container {
+    background-color: rgb(75, 165, 206);
+    width: 80%;
+    font-family: sans-serif;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    align-items: center;
 }
 
 .card {
     border-radius: 5px;
-    max-width: 500px;
-    min-width: 350px;
+    width: 100%;
+    max-width: 530px;
+    min-width: 190px;
+    margin: 1rem 0;
+    padding: 0;
 }
 .id {
     color: #a5a5a5;
