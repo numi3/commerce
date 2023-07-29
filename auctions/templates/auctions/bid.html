@@ -1,0 +1,22 @@
+{% extends 'auctions/layout.html' %}
+
+
+{% block body %}
+    {{ auction }}
+
+    <p>
+        {% if user.is_authenticated %}
+            {% if user == auction.created_by %}
+                <p>You cannot bid your own listing.</p>
+            {% elif auction.is_active %}
+                <form action="" method="post">
+                    {% csrf_token %}
+                    {{ bid_form.as_p }}
+                    <input type="submit" value="Bid">
+                </form>
+            {% else %}
+                <p>This auction is closed</p>
+            {% endif %}
+        {% endif %}
+    </p>
+{% endblock body %}
