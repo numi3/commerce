@@ -1,51 +1,43 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Active Listings</h2>
+<h2>Active Listings</h2>
 
-    {% if not auctions %}
-        <p>{{ empty_message }}</p>
-    {% else %}
-    <div class="container">
-        {% for auction in auctions %}
-        {% comment %} <div class="card">
-            <p><a href="{% url "auctions:listing" auction.id %}">View listing</a></p>
-            <p id="id">ID: {{ auction.id }}</p>
-            <p>Current bid: {{ auction.current_bid.amount }}</p>
-            <p>Starting bid: {{ auction.starting_bid }}</p>
-            <h4>{{ auction.title }}</h4>
-            <img src="{{ auction.image_url}}" alt="img">
-            <p>{{ auction.description }}</p>
-            <p>Number of bids: {{ auction.bid_count }}</p>
-            <p>Category: {{ auction.category }}</p>
-            <p>Created by: {{ auction.created_by }}</p>
-            <p>Created on: {{ auction.created_at }}</p>
-            <p>End time: {{ auction.end_time }}</p>
-            <p>Winner: {{ auction.winner }}</p>
-        </div> {% endcomment %}
+{% if not auctions %}
+<p>{{ empty_message }}</p>
+{% else %}
+<div class="container">
+    {% for auction in auctions %}
         <div class="card" >
-            <p><a class="title bold" href="{% url "auctions:listing" auction.id %}">{{ auction.title }}</a><span class="id">#{{ auction.id }}</span></p>
-            <hr class="large">
-            
-            {% if auction.is_active %}
-                {% if auction.current_bid %}
-                    <p>Current bid: {{ auction.current_bid.amount }}$ by {{ auction.current_bid.bidder }}</p>
+            <div class="content">
+                <p><span><a class="title bold" href="{% url "auctions:listing" auction.id %}">{{ auction.title }}</a><span class="created_by">by {{ auction.created_by }}</span></span><span class="id">#{{ auction.id }}</span></p>
+                <hr class="large">
+                
+                {% if auction.is_active %}
+                    {% if auction.current_bid %}
+                        <p>Current bid: {{ auction.current_bid.amount }}$ by {{ auction.current_bid.bidder }}</p>
+                    {% else %}
+                        <p>Starting bid: {{ auction.starting_bid }}$</p>
+                    {% endif %}
                 {% else %}
-                    <p>Starting bid: {{ auction.starting_bid }}$</p>
+                    {% if auction.winner %}
+                    <p>Auction was won by {{ auction.winner }} for {{ auction.current_bid }}</p>
+                    {% else %}
+                    <p>Unfortunately, nobody has won the auction :[</p>
+                    {% endif %}
                 {% endif %}
-            {% else %}
-                {% if auction.winner %}
-                <p>Auction was won by {{ auction.winner }} for {{ auction.current_bid }}</p>
-                {% else %}
-                <p>Unfortunately, nobody has won the auction :[</p>
-                {% endif %}
-            {% endif %}
-            
-            <p class="italic">"{{ auction.description }}"</p> 
-            <img src="{{ auction.image_url }}">
+                
+                <p class="italic">"{{ auction.description }}"</p> 
+            </div>
+            <a href="{% url "auctions:listing" auction.id %}">
+                <div class="img">
+                    <img src="{{ auction.image_url }}" alt="<Item image>" draggable="false">
+                </div>
+            </a>
         </div>
-            {% endfor %}
-        </div>
-        {% endif %}
-        
-        {% endblock %}
+        {% endfor %}
+    </div>
+
+{% endif %}
+    
+{% endblock %}
