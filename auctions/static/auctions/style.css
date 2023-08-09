@@ -1,0 +1,27 @@
+body {
+    margin: 0;
+    padding: 10px;
+}
+
+.container {
+    background-color: rgb(226, 226, 226);
+}
+
+.id, .created_by {
+    color: #a5a5a5;
+    font-size: 12px;
+    padding-left: 5px;
+    text-transform: none;
+}
+
+.bold {
+    font-weight: 700;
+}
+
+.large {
+    font-size: 24px;
+}
+
+.page-title {
+    text-align: center;
+}

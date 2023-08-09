@@ -1,0 +1,8 @@
+def bid_status(self):
+    if self.is_active:
+        if self.current_bid:
+            return f"Current bid: {self.current_bid.amount}$ by {self.current_bid.bidder}."
+        return f"Starting bid: {self.starting_bid}"
+    if self.winner:
+        return f"Auction was won by {self.winner} for {self.current_bid.amount}$."
+    return "Unfortunately, nobody has won the auction :("

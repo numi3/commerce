@@ -26,4 +26,18 @@ def fix_non_expired(current_time):
 
     for non_expired_auction in conditions:
         non_expired_auction.update(is_active=True)
-        
+
+def sort_categories(auction_query):
+    categories = {}
+    for auction in auction_query:
+        category = auction.category.title()
+        if category not in categories:
+            categories[category] = {
+                "amount": 1,
+                "auctions": [auction]
+            }
+        else:
+            categories[category]["amount"] += 1
+            categories[category]["auctions"].append(auction)
+    return categories
+            

@@ -1,70 +1,96 @@
 {% extends 'auctions/layout.html' %}
+{% load static %}
+
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'auctions/listing.css' %}">
+{% endblock head %}
+
 
 {% block body %}
-{% if not auction.is_active %}
-<p><h3>Auction has ended!</h1></p>
-    {% if auction.winner is not None %}
-    <p><b>{{ auction.winner }}</b> Has won the auction!</p>
-    {% else %}
-    <p>Unfortunately, Nobody won the auction :/</p>
-    {% endif %}
-{% else %}
-<p><h1>Auction is still active.</h1></p>
-{% endif %}
-    <p>ID: {{ auction.id }}</p>
-    <p> {{ auction.is_active }}</p>
-    <p>Current bid: {{ auction.current_bid }}</p>
-    <p>Starting bid: {{ auction.starting_bid }}</p>
-    <h4>{{ auction.title }}</h4>
-    <img src="{{ auction.image_url}}" alt="img">
-    <p>{{ auction.description }}</p>
-    <p>Number of bids: {{ auction.bid_count }}</p>
-    <p>Category: {{ auction.category }}</p>
-    <p>Created by: {{ auction.created_by }}</p>
-    <p>Created at: {{ auction.created_at }}</p>
-    <p>End time: {{ auction.end_time }}</p>
-    <p>Winner: {{ auction.winner }}</p>
-
-<p>is_in_watchlist: {{ is_in_watchlist }}</p>
-{% if user.is_authenticated %}
-    {% if is_in_watchlist %}
-    <a href="{% url 'auctions:watchlist_remove' auction.id %}" method="post">Remove from watchlist</a>
-    {% else %}
-    <a href="{% url 'auctions:watchlist_add' auction.id %}" method="post">Add to watchlist</a>
-    {% endif %}
-    <br>
-    {% if auction.is_active %}
-        {% if auction.created_by == user %}
-        {% comment %} <a href="{% url 'auctions:edit' auction.id %}">Edit</a> {% endcomment %}
-        <a href="{% url 'auctions:close' auction.id %}">Close</a>
+{% comment %} <div class="container">
+    {% if not auction.is_active %}
+    <p><h3>Auction has ended!</h1></p>
+        {% if auction.winner is not None %}
+        <p><b>{{ auction.winner }}</b> Has won the auction!</p>
         {% else %}
-        <a href="{% url 'auctions:bid' auction.id %}">Bid</a>
+        <p>Unfortunately, Nobody won the auction :/</p>
+        {% endif %}
+    {% else %}
+    <p><h1>Auction is still active.</h1></p>
+    {% endif %}
+        <p>ID: {{ auction.id }}</p>
+        <p> {{ auction.is_active }}</p>
+        <p>Current bid: {{ auction.current_bid }}</p>
+        <p>Starting bid: {{ auction.starting_bid }}</p>
+        <h4>{{ auction.title }}</h4>
+        <img src="{{ auction.image_url}}" alt="img">
+        <p>{{ auction.description }}</p>
+        <p>Number of bids: {{ auction.bid_count }}</p>
+        <p>Category: {{ auction.category }}</p>
+        <p>Created by: {{ auction.created_by }}</p>
+        <p>Created at: {{ auction.created_at }}</p>
+        <p>End time: {{ auction.end_time }}</p>
+        <p>Winner: {{ auction.winner }}</p>
+
+    <p>is_in_watchlist: {{ is_in_watchlist }}</p>
+    {% if user.is_authenticated %}
+        {% if is_in_watchlist %}
+        <a href="{% url 'auctions:watchlist_remove' auction.id %}" method="post">Remove from watchlist</a>
+        {% else %}
+        <a href="{% url 'auctions:watchlist_add' auction.id %}" method="post">Add to watchlist</a>
+        {% endif %}
+        <br>
+        {% if auction.is_active %}
+            {% if auction.created_by == user %}
+            <a href="{% url 'auctions:close' auction.id %}">Close</a>
+            {% else %}
+            <a href="{% url 'auctions:bid' auction.id %}">Bid</a>
+            {% endif %}
         {% endif %}
     {% endif %}
-{% endif %}
-<hr>
-<p><h3>Comments</h3></p>
-<p>
-    Add a comment <br>
-    <form action="" method="post">
-        {% csrf_token %}
-        {{ comment_area.as_p }}
-        <input type="submit" value="Add comment">
-    </form>
-</p>
-<ul>
-    {% for comment in comments %}
-    <li>
-        Posted by {{ comment.commenter }} at {{ comment.date }}
-        <ul>
-            <li>
-                {{ comment.content }} 
-            </li>
-        </ul>
-    </li>
-    {% endfor %}
-</ul>
+    <hr>
+    <p><h3>Comments</h3></p>
+    <p>
+        Add a comment <br>
+        <form action="" method="post">
+            {% csrf_token %}
+            {{ comment_area.as_p }}
+            <input type="submit" value="Add comment">
+        </form>
+    </p>
+    <ul>
+        {% for comment in comments %}
+        <li>
+            Posted by {{ comment.commenter }} at {{ comment.date }}
+            <ul>
+                <li>
+                    {{ comment.content }} 
+                </li>
+            </ul>
+        </li>
+        {% endfor %}
+    </ul>
+</div> {% endcomment %}
 
+<div class="container">
+    <div class="content">
+        <div class="title bold large">
+            <span></span>
+            <span>{{ auction.title }}</span>
+            <span class="id">#{{ auction.id }}</span>
+        </div>
+        <button class="button btn btn-primary">text</button>
+        <p class="created_by">by {{ auction.created_by }}</p>
+        <p class="bid_status">{{ auction.bid_status }}</p>
+        <p class="description">"{{ auction.description }}"</p>
+        <div class="img-container">
+            <img src="{{ auction.image_url }}" alt="<item image>">
+        </div>
+        
+    </div>
+    <div class="comments">
+    </div>
 
 
 {% endblock body %}

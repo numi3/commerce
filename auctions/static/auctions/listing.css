@@ -1,0 +1,36 @@
+.title {
+    display: flex;
+    justify-content: space-between;
+    text-align: center;
+    padding-left: 35px;
+}
+
+p {
+    margin: 0 0;
+    padding: 0;
+}
+
+img {
+    padding: 0;
+    margin: 0;
+    max-width: 60vw;
+    max-height: 80vh;
+    border: 1px solid black;
+}
+
+.img-container {
+    display: flex;
+    justify-content: center;
+}
+
+.description, .bid_status, .created_by {
+    text-align: center;
+}
+
+.bid_status, .description {
+    margin: 2px 0;
+
+}
+
+.description {
+}

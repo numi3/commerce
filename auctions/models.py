@@ -44,13 +44,24 @@ class Auction(models.Model):
         related_name="winner"
     )
 
+    
+    def bid_status(self):
+        if self.is_active:
+            if self.current_bid:
+                return f"Current bid: {self.current_bid.amount:,}$ by {self.current_bid.bidder}."
+            return f"Starting bid: {self.starting_bid:,}$."
+        if self.winner:
+            return f"Auction was won by {self.winner} for {self.current_bid.amount:,}$."
+        return "Unfortunately, nobody has won the auction :("
+    
+    
+    def short_desc(self):
+        data = self.description
+        info = (data[:124] + '..') if len(data) > 124 else data
+        return info
+    
     def __str__(self):
-        if self.current_bid is None:
-            bid_status = f"Starting bid: {self.starting_bid:,}$"
-        else:
-            bid_status = f"Current bid: {self.current_bid.amount:,}$ by {self.current_bid.bidder}"
-            
-        return f"#{self.id:,} {self.title} - {bid_status}"
+        return f"#{self.id:,} {self.title} - {self.bid_status()}"
 
 class Bid(models.Model):
     auction_id = models.ForeignKey(

@@ -15,7 +15,8 @@ def all(request):
     # Load & render all auctions
     return render(request, "Auctions/index.html", {
         "auctions": Auction.objects.all().order_by("-id"),
-        "empty_message": "There are no listings."
+        "empty_message": "There are no listings.",
+        "type": "All Listings",
     })
 
     
@@ -23,15 +24,17 @@ def index(request):
     # Load & render active auctions
     return render(request, "auctions/index.html", {
         "auctions": Auction.objects.filter(is_active=True).order_by("-id"),
-        "empty_message": "There are no currently active listings."
+        "empty_message": "There are no currently active listings.",
+        "type": "Active Listings",
     })
 
-
+@login_required(login_url="/login/")
 def watchlist(request):
     # Load & render all auctions that have been added to the user's watchlist.
     return render(request, "auctions/index.html", {
         "auctions": Auction.objects.filter(watchlist_auction__user=request.user),
-        "empty_message": "You haven't added any listings to your watchlist."
+        "empty_message": "You haven't added any listings to your watchlist.",
+        "type": "Watchlist",
     })
 
 
@@ -105,7 +108,7 @@ def new(request):
 def no_listing(request):  # in case id was not provided:
     return HttpResponseRedirect(reverse("auctions:index"))
 
-
+@login_required(login_url="/login/")
 def listing(request, id):
     auction = Auction.objects.get(id=id)
     if request.method == "POST":
@@ -120,7 +123,7 @@ def listing(request, id):
 
     return render(request, "auctions/listing.html", {
         "auction": Auction.objects.get(id=id),
-        "is_in_watchlist": is_in_watchlist(request.user, auction),
+        # "is_in_watchlist": is_in_watchlist(request.user, auction),
         "comments": Comment.objects.filter(auction=auction).order_by("-date"),
         "comment_area": CommentForm()
 
@@ -147,9 +150,10 @@ def bid(request, id):
             "bid_form": BidForm
         })
 
-
+@login_required(login_url="/login/")
 def is_in_watchlist(user, auction):
     return Watchlist.objects.filter(user=user, auction=auction).exists()
+
 
 
 @login_required(login_url="/login/")
@@ -170,7 +174,7 @@ def watchlist_remove(request, id):
         watchlist.delete()
     return HttpResponseRedirect(reverse("auctions:listing", args=[id]))
 
-
+@login_required(login_url="/login/")
 def edit(request, id):
     if request.method == "POST":
         pass
@@ -193,21 +197,13 @@ def close(request, id):
     return HttpResponseRedirect(reverse("auctions:listing", args=[id]))
     
 def categories(request):
-    active_auctions = Auction.objects.filter(is_active=True).order_by("-id")
-    active_auctions = Auction.objects.filter()
-    categories = {}
-    for auction in active_auctions:
-        category = auction.category.title()
-        if category not in categories:
-            categories[category] = {
-                "amount": 1,
-                "auctions": [auction]
-            }
-        else:
-            categories[category]["amount"] += 1
-            categories[category]["auctions"].append(auction)
-    print(categories)
+    auctions = Auction.objects.filter(is_active=True).order_by("-id")
+    categories = sort_categories(auctions)
     return render(request, "auctions/categories.html", {
         "categories": categories,
     })
-            
+
+# def categories(request):
+#     return HttpResponseRedirect(reverse("auctions:categories", args=["active"]))
+    
+    

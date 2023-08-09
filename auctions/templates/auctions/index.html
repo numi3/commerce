@@ -1,8 +1,13 @@
 {% extends "auctions/layout.html" %}
+{% load static %}
+
+{% block head %}
+    <link href="{% static 'auctions/index.css' %}" rel="stylesheet">
+{% endblock head %}
+
 
 {% block body %}
-<h2>Active Listings</h2>
-
+<h2 class="page-title">{{ type }}</h2>
 {% if not auctions %}
 <p>{{ empty_message }}</p>
 {% else %}
@@ -10,24 +15,10 @@
     {% for auction in auctions %}
         <div class="card" >
             <div class="content">
-                <p><span><a class="title bold" href="{% url "auctions:listing" auction.id %}">{{ auction.title }}</a><span class="created_by">by {{ auction.created_by }}</span></span><span class="id">#{{ auction.id }}</span></p>
+                <p><span class="title bold"><a href="{% url "auctions:listing" auction.id %}">{{ auction.title }}</a><span class="created_by">by {{ auction.created_by }}</span></span><span class="id">#{{ auction.id }}</span></p>
                 <hr class="large">
-                
-                {% if auction.is_active %}
-                    {% if auction.current_bid %}
-                        <p>Current bid: {{ auction.current_bid.amount }}$ by {{ auction.current_bid.bidder }}</p>
-                    {% else %}
-                        <p>Starting bid: {{ auction.starting_bid }}$</p>
-                    {% endif %}
-                {% else %}
-                    {% if auction.winner %}
-                    <p>Auction was won by {{ auction.winner }} for {{ auction.current_bid }}</p>
-                    {% else %}
-                    <p>Unfortunately, nobody has won the auction :[</p>
-                    {% endif %}
-                {% endif %}
-                
-                <p class="italic">"{{ auction.description }}"</p> 
+                <p>{{ auction.bid_status }}</p>
+                <p class="italic">"{{ auction.short_desc }}"</p> 
             </div>
             <a href="{% url "auctions:listing" auction.id %}">
                 <div class="img">
@@ -37,7 +28,6 @@
         </div>
         {% endfor %}
     </div>
-
 {% endif %}
     
 {% endblock %}
