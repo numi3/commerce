@@ -1,0 +1,11 @@
+.category-title {
+    text-align: center;
+    text-decoration: underline;
+}
+
+.main-container {
+}
+
+.category-splitter:last-child {
+    display: none;
+}

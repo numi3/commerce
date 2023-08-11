@@ -1,10 +1,16 @@
 body {
     margin: 0;
     padding: 10px;
+    text-align: center;
+}
+
+.nav {
+    display: flex;
+    justify-content: center;
 }
 
 .container {
-    background-color: rgb(226, 226, 226);
+    /* background-color: rgb(226, 226, 226); */
 }
 
 .id, .created_by {
@@ -24,4 +30,13 @@ body {
 
 .page-title {
     text-align: center;
+}
+
+.button {
+    width: 198px;
+    height: 38px;
+}
+
+#nav-hr {
+    margin: 0 0 5px;
 }

@@ -1,0 +1,39 @@
+p {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+
+input, textarea {
+    width: 100%;
+    background-color: rgb(252, 255, 255);
+    border: 2px solid #d4d4d4;
+    border-radius: 5px;
+    height: 36px;
+    padding: 2px 5px;
+}
+
+textarea {
+    height: 20vh;
+}
+
+input[type="submit"] {
+    margin: 36px 0 ;
+}
+
+#id_end_time, #id_starting_bid {
+    text-align: center;
+}
+
+
+label {
+    text-align: left;
+    margin: 0;
+    padding: 5px 0;
+}
+
+ul {
+    display: none;
+}

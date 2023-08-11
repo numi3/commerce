@@ -2,7 +2,6 @@
     display: flex;
     justify-content: space-between;
     text-align: center;
-    padding-left: 35px;
 }
 
 p {
@@ -14,7 +13,7 @@ img {
     padding: 0;
     margin: 0;
     max-width: 60vw;
-    max-height: 80vh;
+    max-height: 40vh;
     border: 1px solid black;
 }
 
@@ -33,4 +32,33 @@ img {
 }
 
 .description {
+}
+
+.button-container {
+    background-color: beige;
+    margin: 15px auto;
+    display: flex;
+    justify-content: center;
+    max-width: 60vw;
+    min-width: 480px;
+}
+
+.alert {
+    margin-bottom: 0px;
+    width: 100%;
+    text-align: center;
+}
+
+.button {
+    margin: 0 3%;
+}
+
+#bid-button, #close-button {
+    width: auto;
+}
+
+.category {
+    font-weight: 400;
+    font-size: 14px;
+    color: rgb(174, 174, 174);
 }

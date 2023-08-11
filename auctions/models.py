@@ -57,7 +57,7 @@ class Auction(models.Model):
     
     def short_desc(self):
         data = self.description
-        info = (data[:124] + '..') if len(data) > 124 else data
+        info = (data[:121] + '..') if len(data) > 124 else data
         return info
     
     def __str__(self):

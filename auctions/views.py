@@ -92,6 +92,7 @@ def register(request):
 
 @login_required(login_url="/login/")
 def new(request):
+    form = None
     if request.method == "POST":
         form = AuctionForm(request.POST)
         if form.is_valid():
@@ -99,20 +100,22 @@ def new(request):
             auction.created_by = request.user
             auction.save()
             return HttpResponseRedirect(reverse("auctions:index"))
-
+        
+    if not form:
+        form = AuctionForm()
+    
     return render(request, "auctions/new.html", {
-        "form": AuctionForm()
+        "form": form
     })
 
 
 def no_listing(request):  # in case id was not provided:
     return HttpResponseRedirect(reverse("auctions:index"))
 
-@login_required(login_url="/login/")
 def listing(request, id):
+    form = None
     auction = Auction.objects.get(id=id)
     if request.method == "POST":
-        # adds comment
         form = CommentForm(request.POST)
         if form.is_valid():
             comment = form.save(commit=False)
@@ -121,11 +124,14 @@ def listing(request, id):
             comment.save()
         return HttpResponseRedirect(reverse("auctions:listing", args=[id]))
 
+    if not form:
+        form = CommentForm()
+        
     return render(request, "auctions/listing.html", {
         "auction": Auction.objects.get(id=id),
-        # "is_in_watchlist": is_in_watchlist(request.user, auction),
+        "is_in_watchlist": is_in_watchlist(request, auction=auction),
         "comments": Comment.objects.filter(auction=auction).order_by("-date"),
-        "comment_area": CommentForm()
+        "comment_area": form
 
     })
 
@@ -151,15 +157,16 @@ def bid(request, id):
         })
 
 @login_required(login_url="/login/")
-def is_in_watchlist(user, auction):
-    return Watchlist.objects.filter(user=user, auction=auction).exists()
+def is_in_watchlist(request , auction):
+    data = Watchlist.objects.filter(user=request.user, auction=auction).exists()    
+    return data
 
 
 
 @login_required(login_url="/login/")
 def watchlist_add(request, id):
     auction = Auction.objects.get(id=id)
-    if not is_in_watchlist(request.user, auction):
+    if not is_in_watchlist(request, auction):
         watchlist = Watchlist(user=request.user, auction=auction)
         watchlist.save()
     return HttpResponseRedirect(reverse("auctions:listing", args=[id]))
@@ -168,7 +175,7 @@ def watchlist_add(request, id):
 @login_required(login_url="/login/")
 def watchlist_remove(request, id):
     auction = Auction.objects.get(id=id)
-    if is_in_watchlist(request.user, auction):
+    if is_in_watchlist(request, auction):
         watchlist = Watchlist.objects.filter(
             user=request.user, auction=auction)
         watchlist.delete()

@@ -1,27 +1,40 @@
 {% extends 'auctions/layout.html' %}
+{% load static %}
+
+
+{% block head %}
+    <link href="{% static 'auctions/categories.css' %}" rel="stylesheet">
+    <link href="{% static 'auctions/index.css' %}" rel="stylesheet">
+{% endblock head %}
+
 
 {% block body %}
 
-{{ categories }}
+    <h2 class="page-title">Categories</h2>
+    <div class="main-container">
+        {% for category, data in categories.items %}
+        <p>
+            <h4 class="category-title">{{ category }} ( {{ data.amount }} result{% if data.amount > 1 %}s{% endif %} )</h3>
+            <div class="container">
+            {% for auction in data.auctions %}
 
-{% for category in categories %}
-    <p>
-        {% comment %} <h3>{{ category }} {{ category["amount"] }}</h3> {% endcomment %}
-    </p>
-{% endfor %} 
-
-
-<h3>Categories</h1>
-
-{% for category, data in categories.items %}
-<p>
-    <h4>{{ category }} ({{ data.amount }})</h3>
-    <ul>
-        {% for auction in data.auctions %}
-        <li><a href="{% url 'auctions:listing' auction.id %}">{{ auction }}</a></li>
-        {% endfor %}
-    </ul>
-</p>
-{% endfor %}
-
+                <div class="card" >
+                    <div class="content">
+                        <p><span class="title bold"><a href="{% url "auctions:listing" auction.id %}">{{ auction.title }}</a><span class="created_by">by {{ auction.created_by }}</span></span><span class="id">#{{ auction.id }}</span></p>
+                        <hr class="large">
+                        <p>{{ auction.bid_status }}</p>
+                        <p class="italic">"{{ auction.short_desc }}"</p> 
+                    </div>
+                    <a href="{% url "auctions:listing" auction.id %}">
+                        <div class="img">
+                            <img src="{{ auction.image_url }}" alt="<Item image>" draggable="false">
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </p>
+        <hr class="category-splitter">
+    {% endfor %}
+    </div>
 {% endblock body %}

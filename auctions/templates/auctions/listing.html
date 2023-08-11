@@ -72,20 +72,39 @@
         {% endfor %}
     </ul>
 </div> {% endcomment %}
-
 <div class="container">
     <div class="content">
         <div class="title bold large">
-            <span></span>
-            <span>{{ auction.title }}</span>
+            <span class="category">{{ auction.category }}</span>
+            <h2>{{ auction.title }}</h2>
             <span class="id">#{{ auction.id }}</span>
         </div>
-        <button class="button btn btn-primary">text</button>
         <p class="created_by">by {{ auction.created_by }}</p>
-        <p class="bid_status">{{ auction.bid_status }}</p>
+        <p class="bid_status bold">{{ auction.bid_status }}</p>
         <p class="description">"{{ auction.description }}"</p>
         <div class="img-container">
             <img src="{{ auction.image_url }}" alt="<item image>">
+        </div>
+        <div class="button-container">
+            {% if user.is_authenticated %}
+                {% if is_in_watchlist %}
+                    <a class="button btn btn-danger" href="{% url 'auctions:watchlist_remove' auction.id %}" method="post">- Remove from watchlist</a>
+                {% else %}
+                    <a class="button btn btn-success" href="{% url 'auctions:watchlist_add' auction.id %}" method="post">+ Add to watchlist</a>
+                {% endif %}
+                <br>
+                {% if auction.is_active %}
+                    {% if auction.created_by == user %}
+                        <a id="close-button" class="button btn btn-danger" href="{% url 'auctions:close' auction.id %}">End Auction</a>
+                    {% else %}
+                        <a id="bid-button" class="button btn btn-primary" href="{% url 'auctions:bid' auction.id %}">Bid</a>
+                    {% endif %}
+                {% endif %}
+            {% else %}
+            <div class="alert alert-warning">
+                <p>In order to bid or add item to watchlist, log in <a href="{% url 'auctions:login' %}">HERE </a></p>
+            </div>
+            {% endif %}
         </div>
         
     </div>

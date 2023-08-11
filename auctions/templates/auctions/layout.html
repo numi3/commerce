@@ -18,9 +18,9 @@
                 Not signed in.
             {% endif %}
         </div>
-        <ul class="nav">
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'auctions:categories' %}">Categories</a>
+            <ul class="nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'auctions:categories' %}">Categories</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'auctions:index' %}">Active Listings</a>
@@ -47,7 +47,8 @@
                 </li>
             {% endif %}
         </ul>
-        <hr>
+
+        <hr id="nav-hr">
         
         {% block body %}
         {% endblock %}
