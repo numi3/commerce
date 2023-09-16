@@ -112,36 +112,44 @@ def new(request):
 def no_listing(request):  # in case id was not provided:
     return HttpResponseRedirect(reverse("auctions:index"))
 
-def listing(request, id):
-    form = None
+def listing(request, id, err_list=None, success_msg=None, watchlist=None):
+    comment_form, bid_form = None, None
     auction = Auction.objects.get(id=id)
+    
     if request.method == "POST":
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
+        comment_form = CommentForm(request.POST)
+        if not success_msg:
+            bid_form = BidForm(request.POST)
+        if comment_form.is_valid():
+            comment = comment_form.save(commit=False)
             comment.auction = auction
             comment.commenter = request.user
             comment.save()
-        return HttpResponseRedirect(reverse("auctions:listing", args=[id]))
+            return HttpResponseRedirect(reverse("auctions:listing", args=[id]))
 
-    if not form:
-        form = CommentForm()
+    if not bid_form:
+        bid_form = BidForm()
         
+    print(success_msg)
     return render(request, "auctions/listing.html", {
         "auction": Auction.objects.get(id=id),
         "is_in_watchlist": is_in_watchlist(request, auction=auction),
         "comments": Comment.objects.filter(auction=auction).order_by("-date"),
-        "comment_area": form
+        "comment_form": CommentForm(),
+        "bid_form": bid_form,
+        "err_list": err_list,
+        "success_msg": success_msg,
+        "watchlist": watchlist
 
     })
 
 
 @login_required(login_url="/login/")
 def bid(request, id):
+    form = None
     if request.method == "POST":
         form = BidForm(request.POST, initial={"auction_id": id})
         if form.is_valid():
-            print("posted")
             bid = form.save(commit=False)
             auction = Auction.objects.get(id=id)
             bid.auction_id = auction
@@ -149,12 +157,18 @@ def bid(request, id):
             auction.current_bid = bid
             bid.save()
             auction.save()
-            return HttpResponseRedirect(reverse("auctions:listing", args=[id]))
-    if (current_listing := Auction.objects.get(id=id)) is not None:
-        return render(request, "auctions/bid.html", {
-            "auction": current_listing,
-            "bid_form": BidForm
-        })
+            success_msg ="Your bid was successfully registered in the system."
+            return listing(request, id, success_msg=success_msg)
+
+    if not form:
+        form = BidForm()
+    else:
+        err_list = []
+        for field in form:
+            if field.errors:
+                for error in field.errors:
+                    err_list.append(str(error))
+    return listing(request, id, err_list=err_list)
 
 @login_required(login_url="/login/")
 def is_in_watchlist(request , auction):
@@ -169,7 +183,8 @@ def watchlist_add(request, id):
     if not is_in_watchlist(request, auction):
         watchlist = Watchlist(user=request.user, auction=auction)
         watchlist.save()
-    return HttpResponseRedirect(reverse("auctions:listing", args=[id]))
+    return listing(request, id, watchlist=True)
+    # return HttpResponseRedirect(reverse("auctions:listing", args=[id]))
 
 
 @login_required(login_url="/login/")
@@ -179,7 +194,7 @@ def watchlist_remove(request, id):
         watchlist = Watchlist.objects.filter(
             user=request.user, auction=auction)
         watchlist.delete()
-    return HttpResponseRedirect(reverse("auctions:listing", args=[id]))
+    return listing(request, id, watchlist=False)
 
 @login_required(login_url="/login/")
 def edit(request, id):
@@ -209,8 +224,5 @@ def categories(request):
     return render(request, "auctions/categories.html", {
         "categories": categories,
     })
-
-# def categories(request):
-#     return HttpResponseRedirect(reverse("auctions:categories", args=["active"]))
-    
+        
     

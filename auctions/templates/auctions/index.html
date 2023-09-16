@@ -8,10 +8,10 @@
 
 {% block body %}
 <h2 class="page-title">{{ type }}</h2>
+<div class="container">
 {% if not auctions %}
 <p>{{ empty_message }}</p>
 {% else %}
-<div class="container">
     {% for auction in auctions %}
         <div class="card" >
             <div class="content">
@@ -27,7 +27,7 @@
             </a>
         </div>
         {% endfor %}
-    </div>
-{% endif %}
+    {% endif %}
+</div>
     
 {% endblock %}

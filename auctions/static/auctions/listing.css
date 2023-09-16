@@ -20,6 +20,7 @@ img {
 .img-container {
     display: flex;
     justify-content: center;
+    margin-top: 15px;
 }
 
 .description, .bid_status, .created_by {
@@ -28,10 +29,6 @@ img {
 
 .bid_status, .description {
     margin: 2px 0;
-
-}
-
-.description {
 }
 
 .button-container {
@@ -46,6 +43,8 @@ img {
     margin-bottom: 0px;
     width: 100%;
     text-align: center;
+    margin-top: 15px
+
 }
 
 .button {
@@ -61,3 +60,50 @@ img {
     font-size: 14px;
     color: rgb(174, 174, 174);
 }
+
+#bid-form {
+    display: flex;
+    flex-direction: row;
+}
+
+.errorlist {
+    display: none
+}
+
+#id_content {
+    width: 100%;
+}
+
+
+label[for="id_content"] {
+    display: none;
+}
+
+p.comment {
+    padding: 25px 0;
+    margin: 5px 0;
+    text-align: left;
+}
+
+span.info-commenter {
+    font-weight: 700;
+}
+
+span.info-comment {
+    margin-top: 5px;
+    margin-left: 24px
+}
+
+p.comment:last-of-type {
+    padding-bottom: 50px;
+}
+
+
+hr:last-of-type {
+    display: none;
+}
+
+.comments-title {
+    text-decoration: underline;
+}
+

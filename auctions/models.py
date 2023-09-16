@@ -15,7 +15,7 @@ class Auction(models.Model):
     title = models.CharField(max_length=64)
     description = models.TextField(max_length=256)
     image_url = models.CharField(max_length=256, blank=True, null=True)
-    category = models.CharField(max_length=256)
+    category = models.CharField(max_length=256, blank=True, null=True)
     created_by = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -59,6 +59,7 @@ class Auction(models.Model):
         data = self.description
         info = (data[:121] + '..') if len(data) > 124 else data
         return info
+    
     
     def __str__(self):
         return f"#{self.id:,} {self.title} - {self.bid_status()}"

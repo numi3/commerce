@@ -9,3 +9,13 @@
 .category-splitter:last-child {
     display: none;
 }
+
+.category-selector {
+    margin: 0 -2.51px;
+    padding: 1px 20px;
+    border-right: 1px solid black;
+}
+
+.category-selector:last-of-type {
+    border-right: none;
+}

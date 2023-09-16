@@ -11,10 +11,16 @@
 {% block body %}
 
     <h2 class="page-title">Categories</h2>
+    {% if not categories %}
+    <div>There are no categorized auctions yet.</div>
+    {% endif %}
     <div class="main-container">
+        {% for category, _ in categories.items %}
+            <a class="category-selector" href="#{{ category }}">{{ category }}</a>
+        {% endfor %}
         {% for category, data in categories.items %}
         <p>
-            <h4 class="category-title">{{ category }} ( {{ data.amount }} result{% if data.amount > 1 %}s{% endif %} )</h3>
+            <h4 id="{{ category }}" class="category-title">{{ category }} ( {{ data.amount }} result{% if data.amount > 1 %}s{% endif %} )</h3>
             <div class="container">
             {% for auction in data.auctions %}
 

@@ -26,8 +26,8 @@ class AuctionForm(forms.ModelForm):
         
     def clean_title(self):
         title = self.cleaned_data.get("title")
-        if len(title) < 6:
-            raise forms.ValidationError("Title must be at least 6 characters long.")
+        if len(title) < 3:
+            raise forms.ValidationError("Title must be at least 3 characters long.")
         return title
     
     
@@ -45,9 +45,9 @@ class BidForm(forms.ModelForm):
     class Meta:
         model = Bid
         fields = ["amount"]
-        
+    
+    amount = forms.DecimalField(label=False, widget=forms.NumberInput(attrs={'class': 'small-input', 'placeholder': 'Enter amount'}))
     def clean_amount(self):
-        
         amount = self.cleaned_data.get("amount")        
         try:
             current_auction = Auction.objects.get(id=self.initial.get("auction_id"))
@@ -55,13 +55,13 @@ class BidForm(forms.ModelForm):
             
             # check if higher than starting bid:
             if amount < starting_bid:
-                raise forms.ValidationError("Cannot bid less than the starting bid.")
+                raise forms.ValidationError("Amount must atleast match the starting bid.")
 
             # check if higher than current bid if exists.
             if current_auction.current_bid is not None:
                 current_bid = Decimal(current_auction.current_bid.amount)
                 if amount <= current_bid:
-                    raise forms.ValidationError("Cannot bid less than the current bid.")
+                    raise forms.ValidationError("Amount must be higher than the current bid.")
             return amount
         except Auction.DoesNotExist:
             raise forms.ValidationError("Auction does not exist.")
@@ -70,5 +70,9 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ["content"]
+        
+        widgets = {
+            "content": forms.Textarea(attrs={"placeholder": "Add a comment..."})
+        }
         
     

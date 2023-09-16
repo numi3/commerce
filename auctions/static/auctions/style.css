@@ -1,3 +1,11 @@
+* {
+    overflow-wrap: break-word;
+}
+
+html {
+    scroll-behavior: smooth;
+  }
+
 body {
     margin: 0;
     padding: 10px;
@@ -9,11 +17,8 @@ body {
     justify-content: center;
 }
 
-.container {
-    /* background-color: rgb(226, 226, 226); */
-}
 
-.id, .created_by {
+.id, .created_by, .end_time {
     color: #a5a5a5;
     font-size: 12px;
     padding-left: 5px;
@@ -40,3 +45,9 @@ body {
 #nav-hr {
     margin: 0 0 5px;
 }
+
+#id_amount {
+    width: 125px;
+    height: 38px;
+}
+

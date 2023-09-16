@@ -3,6 +3,8 @@ from .models import *
 def sort_categories(auction_query):
     categories = {}
     for auction in auction_query:
+        if not auction.category:
+            continue
         category = auction.category.title()
         if category not in categories:
             categories[category] = {
